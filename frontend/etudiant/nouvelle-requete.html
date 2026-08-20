@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nouvelle requête - Espace étudiant</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <nav class="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
+    <h1 class="font-bold text-lg text-gray-800">Nouvelle requête</h1>
+    <a href="dashboard.html" class="text-sm text-blue-600 hover:underline">← Retour</a>
+  </nav>
+
+  <div class="max-w-xl mx-auto px-4 py-8">
+    <div class="bg-white rounded-xl shadow-sm p-6">
+
+      <form id="requeteForm" class="space-y-4">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Type de requête</label>
+          <select id="type" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="RECLAMATION_NOTE">Réclamation relative à une note</option>
+            <option value="PROBLEME_INSCRIPTION">Problème d'inscription académique/pédagogique</option>
+            <option value="DEMANDE_DOCUMENT">Demande de document académique</option>
+            <option value="AUTRE">Autre requête</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Objet</label>
+          <input type="text" id="objet" required
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+          <textarea id="description" required rows="5"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+        </div>
+
+        <div id="erreurMessage" class="text-red-600 text-sm hidden"></div>
+        <div id="succesMessage" class="text-green-600 text-sm hidden"></div>
+
+        <button type="submit"
+          class="w-full bg-blue-600 text-white font-medium py-2 rounded-lg hover:bg-blue-700 transition">
+          Soumettre la requête
+        </button>
+      </form>
+
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    if (!estConnecte()) window.location.href = '../index.html';
+
+    document.getElementById('requeteForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const erreurDiv = document.getElementById('erreurMessage');
+      const succesDiv = document.getElementById('succesMessage');
+      erreurDiv.classList.add('hidden');
+      succesDiv.classList.add('hidden');
+
+      const payload = {
+        type: document.getElementById('type').value,
+        objet: document.getElementById('objet').value,
+        description: document.getElementById('description').value,
+      };
+
+      try {
+        const data = await apiRequest('/requetes', 'POST', payload);
+        succesDiv.textContent = `Requête soumise avec succès. Référence : ${data.requete.reference}`;
+        succesDiv.classList.remove('hidden');
+        setTimeout(() => window.location.href = 'dashboard.html', 2000);
+      } catch (error) {
+        erreurDiv.textContent = error.message;
+        erreurDiv.classList.remove('hidden');
+      }
+    });
+  </script>
+
+</body>
+</html>

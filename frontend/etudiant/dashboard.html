@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mes requêtes - Espace étudiant</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <!-- Barre de navigation -->
+  <nav class="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
+    <div>
+      <h1 class="font-bold text-lg text-gray-800">Suivi des requêtes académiques</h1>
+      <p class="text-sm text-gray-500" id="nomUtilisateur"></p>
+    </div>
+    <button onclick="deconnexion()" class="text-sm text-red-600 hover:underline">Se déconnecter</button>
+  </nav>
+
+  <div class="max-w-4xl mx-auto px-4 py-8">
+
+    <div class="flex justify-between items-center mb-6">
+      <h2 class="text-xl font-semibold text-gray-800">Mes requêtes</h2>
+      <a href="nouvelle-requete.html"
+        class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700 transition">
+        + Nouvelle requête
+      </a>
+    </div>
+
+    <div id="listeRequetes" class="space-y-3">
+      <p class="text-gray-500 text-sm">Chargement...</p>
+    </div>
+
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    if (!estConnecte()) window.location.href = '../index.html';
+
+    const utilisateur = getUtilisateur();
+    document.getElementById('nomUtilisateur').textContent = `${utilisateur.prenom} ${utilisateur.nom}`;
+
+    const statutCouleurs = {
+      SOUMISE: 'bg-yellow-100 text-yellow-800',
+      EN_COURS_DE_TRAITEMENT: 'bg-blue-100 text-blue-800',
+      EN_ATTENTE_DE_COMPLEMENT: 'bg-orange-100 text-orange-800',
+      TRAITEE: 'bg-green-100 text-green-800',
+      REJETEE: 'bg-red-100 text-red-800',
+    };
+
+    async function chargerRequetes() {
+      const conteneur = document.getElementById('listeRequetes');
+      try {
+        const requetes = await apiRequest('/requetes/mes-requetes', 'GET');
+
+        if (requetes.length === 0) {
+          conteneur.innerHTML = '<p class="text-gray-500 text-sm">Aucune requête pour le moment.</p>';
+          return;
+        }
+
+        conteneur.innerHTML = requetes.map(r => `
+          <a href="detail-requete.html?id=${r.id}" class="block bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="font-medium text-gray-800">${r.objet}</p>
+                <p class="text-xs text-gray-500 mt-1">${r.reference} · ${new Date(r.createdAt).toLocaleDateString('fr-FR')}</p>
+              </div>
+              <span class="text-xs px-2 py-1 rounded-full font-medium ${statutCouleurs[r.statut] || 'bg-gray-100 text-gray-800'}">
+                ${r.statut.replace(/_/g, ' ')}
+              </span>
+            </div>
+          </a>
+        `).join('');
+      } catch (error) {
+        conteneur.innerHTML = `<p class="text-red-600 text-sm">${error.message}</p>`;
+      }
+    }
+
+    chargerRequetes();
+  </script>
+
+</body>
+</html>

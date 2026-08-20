@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inscription - Suivi des requêtes académiques</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen flex items-center justify-center px-4 py-8">
+
+  <div class="bg-white rounded-xl shadow-md w-full max-w-md p-8">
+    <div class="text-center mb-6">
+      <h1 class="text-2xl font-bold text-gray-800">Créer un compte</h1>
+      <p class="text-gray-500 text-sm mt-1">Suivi des requêtes académiques</p>
+    </div>
+
+    <form id="registerForm" class="space-y-4">
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+          <input type="text" id="nom" required
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+          <input type="text" id="prenom" required
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+        <input type="email" id="email" required
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Matricule (étudiant)</label>
+        <input type="text" id="matricule"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+        <input type="password" id="motDePasse" required minlength="6"
+          class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+      </div>
+
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
+        <select id="role" class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500">
+          <option value="ETUDIANT">Étudiant</option>
+          <option value="AGENT">Agent de scolarité</option>
+          <option value="ADMIN">Administrateur</option>
+        </select>
+      </div>
+
+      <div id="erreurMessage" class="text-red-600 text-sm hidden"></div>
+      <div id="succesMessage" class="text-green-600 text-sm hidden"></div>
+
+      <button type="submit"
+        class="w-full bg-blue-600 text-white font-medium py-2 rounded-lg hover:bg-blue-700 transition">
+        S'inscrire
+      </button>
+    </form>
+
+    <p class="text-center text-sm text-gray-500 mt-6">
+      Déjà un compte ?
+      <a href="index.html" class="text-blue-600 hover:underline">Se connecter</a>
+    </p>
+  </div>
+
+  <script src="js/api.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.getElementById('registerForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const erreurDiv = document.getElementById('erreurMessage');
+      const succesDiv = document.getElementById('succesMessage');
+      erreurDiv.classList.add('hidden');
+      succesDiv.classList.add('hidden');
+
+      const payload = {
+        nom: document.getElementById('nom').value,
+        prenom: document.getElementById('prenom').value,
+        email: document.getElementById('email').value,
+        motDePasse: document.getElementById('motDePasse').value,
+        role: document.getElementById('role').value,
+        matricule: document.getElementById('matricule').value || null,
+      };
+
+      try {
+        await apiRequest('/auth/register', 'POST', payload, false);
+        succesDiv.textContent = "Compte créé avec succès. Redirection...";
+        succesDiv.classList.remove('hidden');
+        setTimeout(() => window.location.href = 'index.html', 1500);
+      } catch (error) {
+        erreurDiv.textContent = error.message;
+        erreurDiv.classList.remove('hidden');
+      }
+    });
+  </script>
+
+</body>
+</html>

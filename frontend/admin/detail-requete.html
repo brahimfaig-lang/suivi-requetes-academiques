@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Détail de la requête - Administration</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <nav class="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
+    <h1 class="font-bold text-lg text-gray-800">Détail de la requête</h1>
+    <a href="dashboard.html" class="text-sm text-blue-600 hover:underline">← Retour</a>
+  </nav>
+
+  <div class="max-w-2xl mx-auto px-4 py-8" id="contenu">
+    <p class="text-gray-500 text-sm">Chargement...</p>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    if (!estConnecte()) window.location.href = '../index.html';
+
+    const statutCouleurs = {
+      SOUMISE: 'bg-yellow-100 text-yellow-800',
+      EN_COURS_DE_TRAITEMENT: 'bg-blue-100 text-blue-800',
+      EN_ATTENTE_DE_COMPLEMENT: 'bg-orange-100 text-orange-800',
+      TRAITEE: 'bg-green-100 text-green-800',
+      REJETEE: 'bg-red-100 text-red-800',
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+
+    async function chargerDetail() {
+      const conteneur = document.getElementById('contenu');
+      try {
+        const r = await apiRequest(`/requetes/${id}`, 'GET');
+
+        const historiqueHtml = r.historiques.map(h => `
+          <div class="border-l-2 border-blue-300 pl-4 pb-3">
+            <p class="text-sm font-medium text-gray-800">${h.action}</p>
+            <p class="text-xs text-gray-500">${h.auteur.prenom} ${h.auteur.nom} · ${new Date(h.createdAt).toLocaleString('fr-FR')}</p>
+            ${h.commentaire ? `<p class="text-sm text-gray-600 mt-1">${h.commentaire}</p>` : ''}
+          </div>
+        `).join('');
+
+        conteneur.innerHTML = `
+          <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+            <div class="flex justify-between items-start mb-3">
+              <div>
+                <p class="text-xs text-gray-500">${r.reference}</p>
+                <h2 class="text-lg font-semibold text-gray-800">${r.objet}</h2>
+                <p class="text-xs text-gray-500 mt-1">${r.etudiant.prenom} ${r.etudiant.nom} · ${r.etudiant.matricule || 'N/A'} · ${r.etudiant.email}</p>
+              </div>
+              <span class="text-xs px-2 py-1 rounded-full font-medium ${statutCouleurs[r.statut] || ''}">
+                ${r.statut.replace(/_/g, ' ')}
+              </span>
+            </div>
+            <p class="text-sm text-gray-600">${r.description}</p>
+            <p class="text-xs text-gray-400 mt-3">Agent affecté : ${r.agent ? r.agent.prenom + ' ' + r.agent.nom : 'Aucun'}</p>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+            <h3 class="font-medium text-gray-800 mb-3">Affecter à un agent</h3>
+            <div class="flex gap-2">
+              <select id="agentSelect" class="flex-1 border border-gray-300 rounded-lg px-3 py-2">
+                <option value="">Chargement des agents...</option>
+              </select>
+              <button onclick="affecter()" class="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700">
+                Affecter
+              </button>
+            </div>
+            <div id="erreurAffect" class="text-red-600 text-sm hidden mt-2"></div>
+            <div id="succesAffect" class="text-green-600 text-sm hidden mt-2"></div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-sm p-6">
+            <h3 class="font-medium text-gray-800 mb-4">Historique</h3>
+            ${historiqueHtml}
+          </div>
+        `;
+
+        chargerAgents();
+      } catch (error) {
+        conteneur.innerHTML = `<p class="text-red-600 text-sm">${error.message}</p>`;
+      }
+    }
+
+    async function chargerAgents() {
+  try {
+    const agents = await apiRequest('/utilisateurs/agents', 'GET');
+    const select = document.getElementById('agentSelect');
+    if (agents.length === 0) {
+      select.innerHTML = '<option value="">Aucun agent disponible</option>';
+      return;
+    }
+    select.innerHTML = '<option value="">-- Choisir un agent --</option>' +
+      agents.map(a => `<option value="${a.id}">${a.prenom} ${a.nom}</option>`).join('');
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+    async function affecter() {
+      const erreurDiv = document.getElementById('erreurAffect');
+      const succesDiv = document.getElementById('succesAffect');
+      erreurDiv.classList.add('hidden');
+      succesDiv.classList.add('hidden');
+
+      const agentId = document.getElementById('agentSelect').value;
+      if (!agentId) {
+        erreurDiv.textContent = "Sélectionne un agent.";
+        erreurDiv.classList.remove('hidden');
+        return;
+      }
+
+      try {
+        await apiRequest(`/requetes/${id}/affecter`, 'PATCH', { agentId: Number(agentId) });
+        succesDiv.textContent = "Agent affecté avec succès.";
+        succesDiv.classList.remove('hidden');
+        setTimeout(() => chargerDetail(), 1000);
+      } catch (error) {
+        erreurDiv.textContent = error.message;
+        erreurDiv.classList.remove('hidden');
+      }
+    }
+
+    chargerDetail();
+  </script>
+
+</body>
+</html>

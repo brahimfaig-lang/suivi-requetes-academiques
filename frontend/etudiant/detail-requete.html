@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Détail de la requête</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <nav class="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
+    <h1 class="font-bold text-lg text-gray-800">Détail de la requête</h1>
+    <a href="dashboard.html" class="text-sm text-blue-600 hover:underline">← Retour</a>
+  </nav>
+
+  <div class="max-w-2xl mx-auto px-4 py-8" id="contenu">
+    <p class="text-gray-500 text-sm">Chargement...</p>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    if (!estConnecte()) window.location.href = '../index.html';
+
+    const statutCouleurs = {
+      SOUMISE: 'bg-yellow-100 text-yellow-800',
+      EN_COURS_DE_TRAITEMENT: 'bg-blue-100 text-blue-800',
+      EN_ATTENTE_DE_COMPLEMENT: 'bg-orange-100 text-orange-800',
+      TRAITEE: 'bg-green-100 text-green-800',
+      REJETEE: 'bg-red-100 text-red-800',
+    };
+
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get('id');
+
+    async function chargerDetail() {
+      const conteneur = document.getElementById('contenu');
+      try {
+        const r = await apiRequest(`/requetes/${id}`, 'GET');
+
+        const historiqueHtml = r.historiques.map(h => `
+          <div class="border-l-2 border-blue-300 pl-4 pb-4">
+            <p class="text-sm font-medium text-gray-800">${h.action}</p>
+            <p class="text-xs text-gray-500">${h.auteur.prenom} ${h.auteur.nom} · ${new Date(h.createdAt).toLocaleString('fr-FR')}</p>
+            ${h.commentaire ? `<p class="text-sm text-gray-600 mt-1">${h.commentaire}</p>` : ''}
+          </div>
+        `).join('');
+
+        conteneur.innerHTML = `
+          <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
+            <div class="flex justify-between items-start mb-4">
+              <div>
+                <p class="text-xs text-gray-500">${r.reference}</p>
+                <h2 class="text-lg font-semibold text-gray-800">${r.objet}</h2>
+              </div>
+              <span class="text-xs px-2 py-1 rounded-full font-medium ${statutCouleurs[r.statut] || ''}">
+                ${r.statut.replace(/_/g, ' ')}
+              </span>
+            </div>
+            <p class="text-sm text-gray-600 mb-4">${r.description}</p>
+            <p class="text-xs text-gray-400">Type : ${r.type.replace(/_/g, ' ')} · Soumise le ${new Date(r.createdAt).toLocaleDateString('fr-FR')}</p>
+            ${r.motifRejet ? `<div class="mt-4 bg-red-50 text-red-700 text-sm p-3 rounded-lg">Motif de rejet : ${r.motifRejet}</div>` : ''}
+          </div>
+
+          <div class="bg-white rounded-xl shadow-sm p-6">
+            <h3 class="font-medium text-gray-800 mb-4">Historique du traitement</h3>
+            ${historiqueHtml}
+          </div>
+        `;
+      } catch (error) {
+        conteneur.innerHTML = `<p class="text-red-600 text-sm">${error.message}</p>`;
+      }
+    }
+
+    chargerDetail();
+  </script>
+
+</body>
+</html>

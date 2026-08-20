@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Requêtes affectées - Espace agent</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+  <nav class="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
+    <div>
+      <h1 class="font-bold text-lg text-gray-800">Espace Agent de scolarité</h1>
+      <p class="text-sm text-gray-500" id="nomUtilisateur"></p>
+    </div>
+    <button onclick="deconnexion()" class="text-sm text-red-600 hover:underline">Se déconnecter</button>
+  </nav>
+
+  <div class="max-w-4xl mx-auto px-4 py-8">
+
+    <div class="flex flex-wrap gap-2 mb-6">
+      <button class="filtre-btn px-3 py-1.5 rounded-lg text-sm bg-blue-600 text-white" data-statut="">Toutes</button>
+      <button class="filtre-btn px-3 py-1.5 rounded-lg text-sm bg-white text-gray-700 border" data-statut="EN_COURS_DE_TRAITEMENT">En cours</button>
+      <button class="filtre-btn px-3 py-1.5 rounded-lg text-sm bg-white text-gray-700 border" data-statut="EN_ATTENTE_DE_COMPLEMENT">En attente</button>
+      <button class="filtre-btn px-3 py-1.5 rounded-lg text-sm bg-white text-gray-700 border" data-statut="TRAITEE">Traitées</button>
+    </div>
+
+    <div id="listeRequetes" class="space-y-3">
+      <p class="text-gray-500 text-sm">Chargement...</p>
+    </div>
+
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    if (!estConnecte()) window.location.href = '../index.html';
+
+    const utilisateur = getUtilisateur();
+    document.getElementById('nomUtilisateur').textContent = `${utilisateur.prenom} ${utilisateur.nom}`;
+
+    const statutCouleurs = {
+      SOUMISE: 'bg-yellow-100 text-yellow-800',
+      EN_COURS_DE_TRAITEMENT: 'bg-blue-100 text-blue-800',
+      EN_ATTENTE_DE_COMPLEMENT: 'bg-orange-100 text-orange-800',
+      TRAITEE: 'bg-green-100 text-green-800',
+      REJETEE: 'bg-red-100 text-red-800',
+    };
+
+    let statutActif = '';
+
+    async function chargerRequetes() {
+      const conteneur = document.getElementById('listeRequetes');
+      conteneur.innerHTML = '<p class="text-gray-500 text-sm">Chargement...</p>';
+      try {
+        const query = statutActif ? `?statut=${statutActif}` : '';
+        const toutes = await apiRequest(`/requetes${query}`, 'GET');
+        const requetes = toutes.filter(r => r.agentId === utilisateur.id);
+
+        const mesRequetes = requetes.filter(r => r.agent && r.agent.nom !== undefined ? true : r.agentId);
+
+        if (requetes.length === 0) {
+          conteneur.innerHTML = '<p class="text-gray-500 text-sm">Aucune requête.</p>';
+          return;
+        }
+
+        conteneur.innerHTML = requetes.map(r => `
+          <a href="detail-requete.html?id=${r.id}" class="block bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition">
+            <div class="flex justify-between items-start">
+              <div>
+                <p class="font-medium text-gray-800">${r.objet}</p>
+                <p class="text-xs text-gray-500 mt-1">${r.reference} · ${r.etudiant.prenom} ${r.etudiant.nom} (${r.etudiant.matricule || 'N/A'})</p>
+              </div>
+              <span class="text-xs px-2 py-1 rounded-full font-medium ${statutCouleurs[r.statut] || ''}">
+                ${r.statut.replace(/_/g, ' ')}
+              </span>
+            </div>
+          </a>
+        `).join('');
+      } catch (error) {
+        conteneur.innerHTML = `<p class="text-red-600 text-sm">${error.message}</p>`;
+      }
+    }
+
+    document.querySelectorAll('.filtre-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filtre-btn').forEach(b => {
+          b.classList.remove('bg-blue-600', 'text-white');
+          b.classList.add('bg-white', 'text-gray-700', 'border');
+        });
+        btn.classList.remove('bg-white', 'text-gray-700', 'border');
+        btn.classList.add('bg-blue-600', 'text-white');
+        statutActif = btn.dataset.statut;
+        chargerRequetes();
+      });
+    });
+
+    chargerRequetes();
+  </script>
+
+</body>
+</html>

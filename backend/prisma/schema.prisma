@@ -1,0 +1,86 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  ETUDIANT
+  AGENT
+  ADMIN
+}
+
+enum TypeRequete {
+  RECLAMATION_NOTE
+  PROBLEME_INSCRIPTION
+  DEMANDE_DOCUMENT
+  AUTRE
+}
+
+enum StatutRequete {
+  SOUMISE
+  EN_COURS_DE_TRAITEMENT
+  EN_ATTENTE_DE_COMPLEMENT
+  TRAITEE
+  REJETEE
+}
+
+model Utilisateur {
+  id             Int       @id @default(autoincrement())
+  nom            String
+  prenom         String
+  email          String    @unique
+  motDePasse     String
+  role           Role
+  matricule      String?   @unique
+  createdAt      DateTime  @default(now())
+
+  requetes       Requete[]        @relation("RequetesEtudiant")
+  requetesAgent  Requete[]        @relation("RequetesAgent")
+  historiques    Historique[]
+
+  @@map("utilisateurs")
+}
+
+model Requete {
+  id             Int             @id @default(autoincrement())
+  reference      String          @unique
+  type           TypeRequete
+  objet          String
+  description    String
+  statut         StatutRequete   @default(SOUMISE)
+  motifRejet     String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+
+  etudiantId     Int
+  etudiant       Utilisateur     @relation("RequetesEtudiant", fields: [etudiantId], references: [id])
+
+  agentId        Int?
+  agent          Utilisateur?    @relation("RequetesAgent", fields: [agentId], references: [id])
+
+  historiques    Historique[]
+
+  @@map("requetes")
+}
+
+model Historique {
+  id             Int             @id @default(autoincrement())
+  action         String
+  ancienStatut   StatutRequete?
+  nouveauStatut  StatutRequete?
+  commentaire    String?
+  createdAt      DateTime        @default(now())
+
+  requeteId      Int
+  requete        Requete         @relation(fields: [requeteId], references: [id])
+
+  auteurId       Int
+  auteur         Utilisateur     @relation(fields: [auteurId], references: [id])
+
+  @@map("historiques")
+}
