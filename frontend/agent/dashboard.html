@@ -3,32 +3,104 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Requêtes affectées - Espace agent</title>
+  <title>Espace agent - Suivi des requêtes académiques</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .font-serif-academic { font-family: Georgia, 'Times New Roman', serif; }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-[#F7F5EF] min-h-screen">
 
-  <nav class="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
-    <div>
-      <h1 class="font-bold text-lg text-gray-800">Espace Agent de scolarité</h1>
-      <p class="text-sm text-gray-500" id="nomUtilisateur"></p>
+  <div class="flex min-h-screen">
+
+    <!-- SIDEBAR -->
+    <aside class="w-72 bg-[#0F3D2E] text-white flex-col hidden lg:flex">
+      <div class="px-6 py-7 border-b border-white/10 flex items-center gap-3">
+        <div class="w-11 h-11 rounded-lg bg-[#1C6B4F] flex items-center justify-center text-lg font-serif-academic font-bold shrink-0">
+          FS
+        </div>
+        <div>
+          <p class="font-serif-academic text-lg leading-tight">Faculté des Sciences</p>
+          <p class="text-xs text-[#9FCBB8]">Espace agent</p>
+        </div>
+      </div>
+
+      <nav class="flex-1 px-4 py-6 space-y-1">
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#1C6B4F] text-white text-sm font-medium">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          Vue d'ensemble
+        </a>
+      </nav>
+
+      <div class="px-4 py-5 border-t border-white/10">
+        <div class="flex items-center gap-3 px-2">
+          <div class="w-10 h-10 rounded-full bg-[#1D4ED8] flex items-center justify-center text-sm font-bold shrink-0" id="sidebarAvatar">A</div>
+          <div class="min-w-0">
+            <p class="text-sm font-medium truncate" id="sidebarNom">Agent</p>
+            <p class="text-xs text-[#9FCBB8] truncate" id="sidebarEmail">email@univ-douala.cm</p>
+          </div>
+        </div>
+        <button onclick="deconnexion()" class="mt-4 w-full text-left text-xs text-[#F4A5A5] hover:text-white transition-colors px-2">
+          ← Se déconnecter
+        </button>
+      </div>
+    </aside>
+
+    <!-- MOBILE TOP BAR -->
+    <div class="lg:hidden fixed top-0 inset-x-0 z-20 bg-[#0F3D2E] text-white px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded bg-[#1C6B4F] flex items-center justify-center text-xs font-serif-academic font-bold">FS</div>
+        <span class="font-serif-academic text-sm">Espace agent</span>
+      </div>
+      <button onclick="deconnexion()" class="text-xs text-[#F4A5A5]">Déconnexion</button>
     </div>
-    <button onclick="deconnexion()" class="text-sm text-red-600 hover:underline">Se déconnecter</button>
-  </nav>
 
-  <div class="max-w-4xl mx-auto px-4 py-8">
+    <!-- CONTENU PRINCIPAL -->
+    <main class="flex-1 pt-20 lg:pt-0">
 
-    <div class="flex flex-wrap gap-2 mb-6">
-      <button class="filtre-btn px-3 py-1.5 rounded-lg text-sm bg-blue-600 text-white" data-statut="">Toutes</button>
-      <button class="filtre-btn px-3 py-1.5 rounded-lg text-sm bg-white text-gray-700 border" data-statut="EN_COURS_DE_TRAITEMENT">En cours</button>
-      <button class="filtre-btn px-3 py-1.5 rounded-lg text-sm bg-white text-gray-700 border" data-statut="EN_ATTENTE_DE_COMPLEMENT">En attente</button>
-      <button class="filtre-btn px-3 py-1.5 rounded-lg text-sm bg-white text-gray-700 border" data-statut="TRAITEE">Traitées</button>
-    </div>
+      <header class="bg-white border-b border-[#E8E4D8] px-6 lg:px-10 py-6 lg:py-8">
+        <p class="text-xs uppercase tracking-wide text-[#1D4ED8] font-semibold mb-1">Espace agent</p>
+        <h1 class="font-serif-academic text-2xl lg:text-3xl text-[#0F3D2E]">Bonjour, <span id="prenomHeader">—</span></h1>
+        <p class="text-sm text-gray-500 mt-1">Requêtes qui vous sont affectées</p>
+      </header>
 
-    <div id="listeRequetes" class="space-y-3">
-      <p class="text-gray-500 text-sm">Chargement...</p>
-    </div>
+      <div class="px-6 lg:px-10 py-6 lg:py-8">
 
+        <!-- CARTES STATS -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mb-8">
+          <div class="bg-white rounded-xl p-4 lg:p-5 border border-[#E8E4D8]">
+            <p class="text-[11px] uppercase tracking-wide text-gray-400 font-semibold mb-2">Total affectées</p>
+            <p class="text-2xl lg:text-3xl font-serif-academic text-[#0F3D2E]" id="statTotal">0</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 lg:p-5 border border-[#E8E4D8]">
+            <p class="text-[11px] uppercase tracking-wide text-[#1D4ED8] font-semibold mb-2">En cours</p>
+            <p class="text-2xl lg:text-3xl font-serif-academic text-[#1D4ED8]" id="statEnCours">0</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 lg:p-5 border border-[#E8E4D8]">
+            <p class="text-[11px] uppercase tracking-wide text-[#B45309] font-semibold mb-2">En attente</p>
+            <p class="text-2xl lg:text-3xl font-serif-academic text-[#B45309]" id="statAttente">0</p>
+          </div>
+          <div class="bg-white rounded-xl p-4 lg:p-5 border border-[#E8E4D8]">
+            <p class="text-[11px] uppercase tracking-wide text-[#15803D] font-semibold mb-2">Traitées</p>
+            <p class="text-2xl lg:text-3xl font-serif-academic text-[#15803D]" id="statTraitee">0</p>
+          </div>
+        </div>
+
+        <!-- FILTRES -->
+        <div class="flex flex-wrap gap-2 mb-5">
+          <button class="filtre-btn text-sm font-medium px-4 py-2 rounded-lg bg-[#0F3D2E] text-white" data-statut="">Toutes</button>
+          <button class="filtre-btn text-sm font-medium px-4 py-2 rounded-lg bg-white text-[#0F3D2E] border border-[#E8E4D8]" data-statut="EN_COURS_DE_TRAITEMENT">En cours</button>
+          <button class="filtre-btn text-sm font-medium px-4 py-2 rounded-lg bg-white text-[#0F3D2E] border border-[#E8E4D8]" data-statut="EN_ATTENTE_DE_COMPLEMENT">En attente</button>
+          <button class="filtre-btn text-sm font-medium px-4 py-2 rounded-lg bg-white text-[#0F3D2E] border border-[#E8E4D8]" data-statut="TRAITEE">Traitées</button>
+        </div>
+
+        <div id="listeRequetes" class="space-y-3">
+          <p class="text-sm text-gray-400">Chargement...</p>
+        </div>
+
+      </div>
+    </main>
   </div>
 
   <script src="../js/api.js"></script>
@@ -37,46 +109,55 @@
     if (!estConnecte()) window.location.href = '../index.html';
 
     const utilisateur = getUtilisateur();
-    document.getElementById('nomUtilisateur').textContent = `${utilisateur.prenom} ${utilisateur.nom}`;
+    document.getElementById('prenomHeader').textContent = utilisateur.prenom;
+    document.getElementById('sidebarNom').textContent = `${utilisateur.prenom} ${utilisateur.nom}`;
+    document.getElementById('sidebarEmail').textContent = utilisateur.email;
+    document.getElementById('sidebarAvatar').textContent = utilisateur.prenom.charAt(0).toUpperCase();
 
-    const statutCouleurs = {
-      SOUMISE: 'bg-yellow-100 text-yellow-800',
-      EN_COURS_DE_TRAITEMENT: 'bg-blue-100 text-blue-800',
-      EN_ATTENTE_DE_COMPLEMENT: 'bg-orange-100 text-orange-800',
-      TRAITEE: 'bg-green-100 text-green-800',
-      REJETEE: 'bg-red-100 text-red-800',
+    const statutConfig = {
+      SOUMISE:                  { label: 'Soumise',               badge: 'bg-[#FDF1E2] text-[#B45309]' },
+      EN_COURS_DE_TRAITEMENT:   { label: 'En cours de traitement', badge: 'bg-[#E6EEFB] text-[#1D4ED8]' },
+      EN_ATTENTE_DE_COMPLEMENT: { label: 'En attente de complément', badge: 'bg-[#FDF1E2] text-[#B45309]' },
+      TRAITEE:                  { label: 'Traitée',                badge: 'bg-[#E5F3EA] text-[#15803D]' },
+      REJETEE:                  { label: 'Rejetée',                badge: 'bg-[#FBE9E9] text-[#B91C1C]' },
     };
 
     let statutActif = '';
+    let toutesMesRequetes = [];
 
     async function chargerRequetes() {
       const conteneur = document.getElementById('listeRequetes');
-      conteneur.innerHTML = '<p class="text-gray-500 text-sm">Chargement...</p>';
+      conteneur.innerHTML = '<p class="text-sm text-gray-400">Chargement...</p>';
       try {
-        const query = statutActif ? `?statut=${statutActif}` : '';
-        const toutes = await apiRequest(`/requetes${query}`, 'GET');
-        const requetes = toutes.filter(r => r.agentId === utilisateur.id);
+        const toutes = await apiRequest('/requetes', 'GET');
+        toutesMesRequetes = toutes.filter(r => r.agentId === utilisateur.id);
 
-        const mesRequetes = requetes.filter(r => r.agent && r.agent.nom !== undefined ? true : r.agentId);
+        document.getElementById('statTotal').textContent = toutesMesRequetes.length;
+        document.getElementById('statEnCours').textContent = toutesMesRequetes.filter(r => r.statut === 'EN_COURS_DE_TRAITEMENT').length;
+        document.getElementById('statAttente').textContent = toutesMesRequetes.filter(r => r.statut === 'EN_ATTENTE_DE_COMPLEMENT').length;
+        document.getElementById('statTraitee').textContent = toutesMesRequetes.filter(r => r.statut === 'TRAITEE').length;
 
-        if (requetes.length === 0) {
-          conteneur.innerHTML = '<p class="text-gray-500 text-sm">Aucune requête.</p>';
+        const filtrees = statutActif ? toutesMesRequetes.filter(r => r.statut === statutActif) : toutesMesRequetes;
+
+        if (filtrees.length === 0) {
+          conteneur.innerHTML = '<div class="bg-white rounded-xl border border-[#E8E4D8] p-8 text-center text-sm text-gray-400">Aucune requête dans cette catégorie.</div>';
           return;
         }
 
-        conteneur.innerHTML = requetes.map(r => `
-          <a href="detail-requete.html?id=${r.id}" class="block bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition">
-            <div class="flex justify-between items-start">
-              <div>
-                <p class="font-medium text-gray-800">${r.objet}</p>
-                <p class="text-xs text-gray-500 mt-1">${r.reference} · ${r.etudiant.prenom} ${r.etudiant.nom} (${r.etudiant.matricule || 'N/A'})</p>
+        conteneur.innerHTML = filtrees.map(r => {
+          const cfg = statutConfig[r.statut] || { label: r.statut, badge: 'bg-gray-100 text-gray-600' };
+          return `
+            <a href="detail-requete.html?id=${r.id}" class="block bg-white rounded-xl border border-[#E8E4D8] p-4 lg:p-5 hover:border-[#1C6B4F] transition-colors">
+              <div class="flex justify-between items-start gap-3">
+                <div class="min-w-0">
+                  <p class="font-medium text-[#0F3D2E]">${r.objet}</p>
+                  <p class="text-xs text-gray-400 mt-1">${r.reference} · ${r.etudiant.prenom} ${r.etudiant.nom} (${r.etudiant.matricule || 'N/A'})</p>
+                </div>
+                <span class="text-xs px-2.5 py-1 rounded-full font-medium shrink-0 ${cfg.badge}">${cfg.label}</span>
               </div>
-              <span class="text-xs px-2 py-1 rounded-full font-medium ${statutCouleurs[r.statut] || ''}">
-                ${r.statut.replace(/_/g, ' ')}
-              </span>
-            </div>
-          </a>
-        `).join('');
+            </a>
+          `;
+        }).join('');
       } catch (error) {
         conteneur.innerHTML = `<p class="text-red-600 text-sm">${error.message}</p>`;
       }
@@ -85,11 +166,11 @@
     document.querySelectorAll('.filtre-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         document.querySelectorAll('.filtre-btn').forEach(b => {
-          b.classList.remove('bg-blue-600', 'text-white');
-          b.classList.add('bg-white', 'text-gray-700', 'border');
+          b.classList.remove('bg-[#0F3D2E]', 'text-white');
+          b.classList.add('bg-white', 'text-[#0F3D2E]', 'border', 'border-[#E8E4D8]');
         });
-        btn.classList.remove('bg-white', 'text-gray-700', 'border');
-        btn.classList.add('bg-blue-600', 'text-white');
+        btn.classList.remove('bg-white', 'border', 'border-[#E8E4D8]');
+        btn.classList.add('bg-[#0F3D2E]', 'text-white');
         statutActif = btn.dataset.statut;
         chargerRequetes();
       });

@@ -7,6 +7,12 @@ async function register(req, res) {
   try {
     const { nom, prenom, email, motDePasse, role, matricule } = req.body;
 
+   if ((userRole === 'ETUDIANT' || userRole === 'Étudiant') && (!matricule || !matricule.trim())) {
+      return res.status(400).json({ 
+        message: "Le matricule est obligatoire pour un compte étudiant." 
+      });
+    }
+
     const existant = await prisma.utilisateur.findUnique({ where: { email } });
     if (existant) {
       return res.status(409).json({ message: "Cet email est déjà utilisé." });

@@ -3,39 +3,97 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tableau de bord - Administration</title>
+  <title>Administration - Suivi des requêtes académiques</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
+    .font-serif-academic { font-family: Georgia, 'Times New Roman', serif; }
+  </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-[#F7F5EF] min-h-screen">
 
-  <nav class="bg-white shadow-sm px-6 py-4 flex justify-between items-center">
-    <div>
-      <h1 class="font-bold text-lg text-gray-800">Administration</h1>
-      <p class="text-sm text-gray-500" id="nomUtilisateur"></p>
-    </div>
-    <button onclick="deconnexion()" class="text-sm text-red-600 hover:underline">Se déconnecter</button>
-  </nav>
+  <div class="flex min-h-screen">
 
-  <div class="max-w-5xl mx-auto px-4 py-8">
-
-    <!-- Statistiques -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8" id="statsCards">
-      <div class="bg-white rounded-xl shadow-sm p-4">
-        <p class="text-xs text-gray-500">Total requêtes</p>
-        <p class="text-2xl font-bold text-gray-800" id="statTotal">-</p>
+    <!-- SIDEBAR -->
+    <aside class="w-72 bg-[#0F3D2E] text-white flex-col hidden lg:flex">
+      <div class="px-6 py-7 border-b border-white/10 flex items-center gap-3">
+        <div class="w-11 h-11 rounded-lg bg-[#1C6B4F] flex items-center justify-center text-lg font-serif-academic font-bold shrink-0">
+          FS
+        </div>
+        <div>
+          <p class="font-serif-academic text-lg leading-tight">Faculté des Sciences</p>
+          <p class="text-xs text-[#9FCBB8]">Administration</p>
+        </div>
       </div>
+
+      <nav class="flex-1 px-4 py-6 space-y-1">
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#1C6B4F] text-white text-sm font-medium">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+          Vue d'ensemble
+        </a>
+        <a href="#toutes" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#C9DFD4] hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          Toutes les requêtes
+        </a>
+      </nav>
+
+      <div class="px-4 py-5 border-t border-white/10">
+        <div class="flex items-center gap-3 px-2">
+          <div class="w-10 h-10 rounded-full bg-[#0F3D2E] border-2 border-[#B45309] flex items-center justify-center text-sm font-bold shrink-0" id="sidebarAvatar">A</div>
+          <div class="min-w-0">
+            <p class="text-sm font-medium truncate" id="sidebarNom">Administrateur</p>
+            <p class="text-xs text-[#9FCBB8] truncate" id="sidebarEmail">email@univ-douala.cm</p>
+          </div>
+        </div>
+        <button onclick="deconnexion()" class="mt-4 w-full text-left text-xs text-[#F4A5A5] hover:text-white transition-colors px-2">
+          ← Se déconnecter
+        </button>
+      </div>
+    </aside>
+
+    <!-- MOBILE TOP BAR -->
+    <div class="lg:hidden fixed top-0 inset-x-0 z-20 bg-[#0F3D2E] text-white px-4 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded bg-[#1C6B4F] flex items-center justify-center text-xs font-serif-academic font-bold">FS</div>
+        <span class="font-serif-academic text-sm">Administration</span>
+      </div>
+      <button onclick="deconnexion()" class="text-xs text-[#F4A5A5]">Déconnexion</button>
     </div>
 
-    <div class="flex justify-between items-center mb-4">
-      <h2 class="text-lg font-semibold text-gray-800">Toutes les requêtes</h2>
-      <input type="text" id="recherche" placeholder="Rechercher par référence..."
-        class="border border-gray-300 rounded-lg px-3 py-1.5 text-sm">
-    </div>
+    <!-- CONTENU PRINCIPAL -->
+    <main class="flex-1 pt-20 lg:pt-0">
 
-    <div id="listeRequetes" class="space-y-3">
-      <p class="text-gray-500 text-sm">Chargement...</p>
-    </div>
+      <header class="bg-white border-b border-[#E8E4D8] px-6 lg:px-10 py-6 lg:py-8">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div>
+            <p class="text-xs uppercase tracking-wide text-[#B45309] font-semibold mb-1">Tableau de bord</p>
+            <h1 class="font-serif-academic text-2xl lg:text-3xl text-[#0F3D2E]">Administration</h1>
+          </div>
+          <input type="text" id="recherche" placeholder="Rechercher par référence..."
+            class="w-full lg:w-72 border border-[#E8E4D8] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#1C6B4F]">
+        </div>
+      </header>
 
+      <div class="px-6 lg:px-10 py-6 lg:py-8">
+
+        <!-- CARTES STATS -->
+        <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4 mb-8" id="statsCards">
+          <div class="bg-white rounded-xl p-4 lg:p-5 border border-[#E8E4D8]">
+            <p class="text-[11px] uppercase tracking-wide text-gray-400 font-semibold mb-2">Total requêtes</p>
+            <p class="text-2xl lg:text-3xl font-serif-academic text-[#0F3D2E]" id="statTotal">-</p>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between mb-4" id="toutes">
+          <h2 class="font-serif-academic text-lg text-[#0F3D2E]">Toutes les requêtes</h2>
+        </div>
+
+        <div id="listeRequetes" class="space-y-3">
+          <p class="text-sm text-gray-400">Chargement...</p>
+        </div>
+
+      </div>
+    </main>
   </div>
 
   <script src="../js/api.js"></script>
@@ -44,14 +102,24 @@
     if (!estConnecte()) window.location.href = '../index.html';
 
     const utilisateur = getUtilisateur();
-    document.getElementById('nomUtilisateur').textContent = `${utilisateur.prenom} ${utilisateur.nom}`;
+    document.getElementById('sidebarNom').textContent = `${utilisateur.prenom} ${utilisateur.nom}`;
+    document.getElementById('sidebarEmail').textContent = utilisateur.email;
+    document.getElementById('sidebarAvatar').textContent = utilisateur.prenom.charAt(0).toUpperCase();
 
-    const statutCouleurs = {
-      SOUMISE: 'bg-yellow-100 text-yellow-800',
-      EN_COURS_DE_TRAITEMENT: 'bg-blue-100 text-blue-800',
-      EN_ATTENTE_DE_COMPLEMENT: 'bg-orange-100 text-orange-800',
-      TRAITEE: 'bg-green-100 text-green-800',
-      REJETEE: 'bg-red-100 text-red-800',
+    const statutConfig = {
+      SOUMISE:                  { label: 'Soumise',               badge: 'bg-[#FDF1E2] text-[#B45309]' },
+      EN_COURS_DE_TRAITEMENT:   { label: 'En cours de traitement', badge: 'bg-[#E6EEFB] text-[#1D4ED8]' },
+      EN_ATTENTE_DE_COMPLEMENT: { label: 'En attente de complément', badge: 'bg-[#FDF1E2] text-[#B45309]' },
+      TRAITEE:                  { label: 'Traitée',                badge: 'bg-[#E5F3EA] text-[#15803D]' },
+      REJETEE:                  { label: 'Rejetée',                badge: 'bg-[#FBE9E9] text-[#B91C1C]' },
+    };
+
+    const statutCouleurCarte = {
+      SOUMISE: 'text-[#B45309]',
+      EN_COURS_DE_TRAITEMENT: 'text-[#1D4ED8]',
+      EN_ATTENTE_DE_COMPLEMENT: 'text-[#B45309]',
+      TRAITEE: 'text-[#15803D]',
+      REJETEE: 'text-[#B91C1C]',
     };
 
     async function chargerStats() {
@@ -60,17 +128,19 @@
         const conteneur = document.getElementById('statsCards');
 
         let html = `
-          <div class="bg-white rounded-xl shadow-sm p-4">
-            <p class="text-xs text-gray-500">Total requêtes</p>
-            <p class="text-2xl font-bold text-gray-800">${stats.total}</p>
+          <div class="bg-white rounded-xl p-4 lg:p-5 border border-[#E8E4D8]">
+            <p class="text-[11px] uppercase tracking-wide text-gray-400 font-semibold mb-2">Total requêtes</p>
+            <p class="text-2xl lg:text-3xl font-serif-academic text-[#0F3D2E]">${stats.total}</p>
           </div>
         `;
 
         stats.parStatut.forEach(s => {
+          const cfg = statutConfig[s.statut] || { label: s.statut };
+          const couleur = statutCouleurCarte[s.statut] || 'text-[#0F3D2E]';
           html += `
-            <div class="bg-white rounded-xl shadow-sm p-4">
-              <p class="text-xs text-gray-500">${s.statut.replace(/_/g, ' ')}</p>
-              <p class="text-2xl font-bold text-gray-800">${s.total}</p>
+            <div class="bg-white rounded-xl p-4 lg:p-5 border border-[#E8E4D8]">
+              <p class="text-[11px] uppercase tracking-wide ${couleur} font-semibold mb-2">${cfg.label}</p>
+              <p class="text-2xl lg:text-3xl font-serif-academic ${couleur}">${s.total}</p>
             </div>
           `;
         });
@@ -88,23 +158,24 @@
         const requetes = await apiRequest(`/requetes${query}`, 'GET');
 
         if (requetes.length === 0) {
-          conteneur.innerHTML = '<p class="text-gray-500 text-sm">Aucune requête.</p>';
+          conteneur.innerHTML = '<div class="bg-white rounded-xl border border-[#E8E4D8] p-8 text-center text-sm text-gray-400">Aucune requête.</div>';
           return;
         }
 
-        conteneur.innerHTML = requetes.map(r => `
-          <a href="detail-requete.html?id=${r.id}" class="block bg-white rounded-lg shadow-sm p-4 hover:shadow-md transition">
-            <div class="flex justify-between items-start">
-              <div>
-                <p class="font-medium text-gray-800">${r.objet}</p>
-                <p class="text-xs text-gray-500 mt-1">${r.reference} · ${r.etudiant.prenom} ${r.etudiant.nom} · Agent: ${r.agent ? r.agent.prenom + ' ' + r.agent.nom : 'Non affecté'}</p>
+        conteneur.innerHTML = requetes.map(r => {
+          const cfg = statutConfig[r.statut] || { label: r.statut, badge: 'bg-gray-100 text-gray-600' };
+          return `
+            <a href="detail-requete.html?id=${r.id}" class="block bg-white rounded-xl border border-[#E8E4D8] p-4 lg:p-5 hover:border-[#1C6B4F] transition-colors">
+              <div class="flex justify-between items-start gap-3">
+                <div class="min-w-0">
+                  <p class="font-medium text-[#0F3D2E]">${r.objet}</p>
+                  <p class="text-xs text-gray-400 mt-1">${r.reference} · ${r.etudiant.prenom} ${r.etudiant.nom} · Agent : ${r.agent ? r.agent.prenom + ' ' + r.agent.nom : 'Non affecté'}</p>
+                </div>
+                <span class="text-xs px-2.5 py-1 rounded-full font-medium shrink-0 ${cfg.badge}">${cfg.label}</span>
               </div>
-              <span class="text-xs px-2 py-1 rounded-full font-medium ${statutCouleurs[r.statut] || ''}">
-                ${r.statut.replace(/_/g, ' ')}
-              </span>
-            </div>
-          </a>
-        `).join('');
+            </a>
+          `;
+        }).join('');
       } catch (error) {
         conteneur.innerHTML = `<p class="text-red-600 text-sm">${error.message}</p>`;
       }
