@@ -7,27 +7,34 @@ async function register(req, res) {
   try {
     const { nom, prenom, email, motDePasse, role, matricule } = req.body;
 
-   if ((userRole === 'ETUDIANT' || userRole === 'Étudiant') && (!matricule || !matricule.trim())) {
-      return res.status(400).json({ 
-        message: "Le matricule est obligatoire pour un compte étudiant." 
+    // Normalisation du rôle (ex: "Étudiant" -> "ETUDIANT")
+    const userRole = role ? role.toUpperCase() : 'ETUDIANT';
+
+    // Vérification si le matricule est requis pour un étudiant
+    if ((userRole === 'ETUDIANT' || userRole === 'ÉTUDIANT') && (!matricule || matricule.trim() === '')) {
+      return res.status(400).json({
+        message: "Le matricule est obligatoire pour un compte étudiant."
       });
     }
 
+    // Vérifier si l'utilisateur existe déjà
     const existant = await prisma.utilisateur.findUnique({ where: { email } });
     if (existant) {
       return res.status(409).json({ message: "Cet email est déjà utilisé." });
     }
 
+    // Hachage du mot de passe
     const hash = await bcrypt.hash(motDePasse, 10);
 
+    // Création de l'utilisateur
     const utilisateur = await prisma.utilisateur.create({
       data: {
         nom,
         prenom,
         email,
         motDePasse: hash,
-        role: role || 'ETUDIANT',
-        matricule: matricule || null,
+        role: userRole,
+        matricule: matricule ? matricule.trim() : null,
       },
     });
 
@@ -42,6 +49,7 @@ async function register(req, res) {
       },
     });
   } catch (error) {
+    console.error("❌ Erreur lors de l'inscription :", error);
     return res.status(500).json({ message: "Erreur serveur.", error: error.message });
   }
 }
@@ -62,8 +70,8 @@ async function login(req, res) {
 
     const token = jwt.sign(
       { id: utilisateur.id, role: utilisateur.role },
-      process.env.JWT_SECRET,
-      { expiresIn: process.env.JWT_EXPIRES_IN }
+      process.env.JWT_SECRET || 'secret_key',
+      { expiresIn: process.env.JWT_EXPIRES_IN || '1d' }
     );
 
     return res.status(200).json({
@@ -78,6 +86,7 @@ async function login(req, res) {
       },
     });
   } catch (error) {
+    console.error("❌ Erreur lors de la connexion :", error);
     return res.status(500).json({ message: "Erreur serveur.", error: error.message });
   }
 }
