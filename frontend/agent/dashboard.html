@@ -10,25 +10,26 @@
     .font-serif-academic { font-family: Georgia, 'Times New Roman', serif; }
   </style>
 </head>
-<body class="bg-[#F7F5EF] min-h-screen">
+<body class="bg-[#EAEAEA] min-h-screen">
 
   <div class="flex min-h-screen">
 
     <!-- SIDEBAR -->
-    <aside class="w-72 bg-[#0F3D2E] text-white flex-col hidden lg:flex">
+    <aside class="w-72 bg-[#1B365D] text-white flex-col hidden lg:flex">
       <div class="px-6 py-7 border-b border-white/10 flex items-center gap-3">
-        <div class="w-11 h-11 rounded-lg bg-[#1C6B4F] flex items-center justify-center text-lg font-serif-academic font-bold shrink-0">
+        <div class="w-11 h-11 rounded-lg bg-[#1D4ED8] flex items-center justify-center text-lg font-serif-academic font-bold shrink-0">
           FS
         </div>
         <div>
           <p class="font-serif-academic text-lg leading-tight">Faculté des Sciences</p>
-          <p class="text-xs text-[#9FCBB8]">Espace agent</p>
+          <p class="text-xs text-[#BFDBFE]">Espace agent</p>
         </div>
       </div>
 
       <nav class="flex-1 px-4 py-6 space-y-1">
-        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#1C6B4F] text-white text-sm font-medium">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#1D4ED8] text-white text-sm font-medium">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
           Vue d'ensemble
         </a>
       </nav>
@@ -61,7 +62,7 @@
 
       <header class="bg-white border-b border-[#E8E4D8] px-6 lg:px-10 py-6 lg:py-8">
         <p class="text-xs uppercase tracking-wide text-[#1D4ED8] font-semibold mb-1">Espace agent</p>
-        <h1 class="font-serif-academic text-2xl lg:text-3xl text-[#0F3D2E]">Bonjour, <span id="prenomHeader">—</span></h1>
+        <h1 class="font-serif-academic text-2xl lg:text-3xl text-[#1B365D]">Bonjour, <span id="prenomHeader">—</span></h1>
         <p class="text-sm text-gray-500 mt-1">Requêtes qui vous sont affectées</p>
       </header>
 
@@ -89,10 +90,10 @@
 
         <!-- FILTRES -->
         <div class="flex flex-wrap gap-2 mb-5">
-          <button class="filtre-btn text-sm font-medium px-4 py-2 rounded-lg bg-[#0F3D2E] text-white" data-statut="">Toutes</button>
-          <button class="filtre-btn text-sm font-medium px-4 py-2 rounded-lg bg-white text-[#0F3D2E] border border-[#E8E4D8]" data-statut="EN_COURS_DE_TRAITEMENT">En cours</button>
-          <button class="filtre-btn text-sm font-medium px-4 py-2 rounded-lg bg-white text-[#0F3D2E] border border-[#E8E4D8]" data-statut="EN_ATTENTE_DE_COMPLEMENT">En attente</button>
-          <button class="filtre-btn text-sm font-medium px-4 py-2 rounded-lg bg-white text-[#0F3D2E] border border-[#E8E4D8]" data-statut="TRAITEE">Traitées</button>
+          <button class="filtre-btn text-sm font-medium px-4 py-2 rounded-lg bg-[#1D4ED8] text-white" data-statut="">Toutes</button>
+          <button class="filtre-btn text-sm font-medium px-4 py-2 rounded-lg bg-white text-[#1D4ED8] border border-[#E8E4D8]" data-statut="EN_COURS_DE_TRAITEMENT">En cours</button>
+          <button class="filtre-btn text-sm font-medium px-4 py-2 rounded-lg bg-white text-[#1D4ED8] border border-[#E8E4D8]" data-statut="EN_ATTENTE_DE_COMPLEMENT">En attente</button>
+          <button class="filtre-btn text-sm font-medium px-4 py-2 rounded-lg bg-white text-[#1D4ED8] border border-[#E8E4D8]" data-statut="TRAITEE">Traitées</button>
         </div>
 
         <div id="listeRequetes" class="space-y-3">
@@ -147,7 +148,7 @@
         conteneur.innerHTML = filtrees.map(r => {
           const cfg = statutConfig[r.statut] || { label: r.statut, badge: 'bg-gray-100 text-gray-600' };
           return `
-            <a href="detail-requete.html?id=${r.id}" class="block bg-white rounded-xl border border-[#E8E4D8] p-4 lg:p-5 hover:border-[#1C6B4F] transition-colors">
+            <a href="detail-requete.html?id=${r.id}" class="block bg-white rounded-xl border border-[#E8E4D8] p-4 lg:p-5 hover:border-[#1D4ED8] transition-colors">
               <div class="flex justify-between items-start gap-3">
                 <div class="min-w-0">
                   <p class="font-medium text-[#0F3D2E]">${r.objet}</p>
