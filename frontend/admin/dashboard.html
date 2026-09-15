@@ -6,90 +6,105 @@
   <title>Administration - Suivi des requêtes académiques</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; }
-    .font-serif-academic { font-family: Georgia, 'Times New Roman', serif; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
   </style>
 </head>
-<body class="bg-[#EAEAEA] min-h-screen">
+<body class="bg-slate-100 min-h-screen text-slate-800">
 
   <div class="flex min-h-screen">
 
-    <!-- SIDEBAR -->
-    <aside class="w-72 bg-[#0F3D2E] text-white flex-col hidden lg:flex">
-      <div class="px-6 py-7 border-b border-white/10 flex items-center gap-3">
-        <div class="w-11 h-11 rounded-lg bg-[#1C6B4F] flex items-center justify-center text-lg font-serif-academic font-bold shrink-0">
-          FS
-        </div>
+    <!-- SIDEBAR (Bleu Marine & Accents Or) -->
+    <aside class="w-72 bg-blue-950 text-white flex-col hidden lg:flex border-r border-amber-500/20">
+      <!-- En-tête Sidebar -->
+      <div class="px-6 py-7 border-b border-blue-900/60 flex items-center gap-3">
+       <img src="../../images/logo-faculte-sciences.png" alt="Logo Faculté des Sciences" class="w-11 h-11 rounded-xl object-contain bg-white p-1 shrink-0 shadow-md">
         <div>
-          <p class="font-serif-academic text-lg leading-tight">Faculté des Sciences</p>
-          <p class="text-xs text-[#BFDBFE]">Administration</p>
+          <p class="font-bold text-base leading-tight text-white">Faculté des Sciences</p>
+          <p class="text-xs text-amber-400 uppercase tracking-wider font-semibold">Administration</p>
         </div>
       </div>
 
-      <nav class="flex-1 px-4 py-6 space-y-1">
-        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-[#1D4ED8] text-white text-sm font-medium">
+      <!-- Navigation -->
+      <nav class="flex-1 px-4 py-6 space-y-1.5">
+        <a href="dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-xl bg-blue-900 text-amber-400 text-sm font-semibold shadow-sm border-l-4 border-amber-400">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
           Vue d'ensemble
         </a>
-        <a href="#toutes" class="flex items-center gap-3 px-4 py-3 rounded-lg text-[#C9DFD4] hover:bg-white/5 hover:text-white text-sm font-medium transition-colors">
+        <a href="#toutes" class="flex items-center gap-3 px-4 py-3 rounded-xl text-slate-300 hover:bg-blue-900/50 hover:text-white text-sm font-medium transition-all">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
           Toutes les requêtes
         </a>
       </nav>
 
-      <div class="px-4 py-5 border-t border-white/10">
+      <!-- Profil & Déconnexion -->
+      <div class="px-4 py-5 border-t border-blue-900/60 bg-blue-950/50">
         <div class="flex items-center gap-3 px-2">
-          <div class="w-10 h-10 rounded-full bg-[#0F3D2E] border-2 border-[#B45309] flex items-center justify-center text-sm font-bold shrink-0" id="sidebarAvatar">A</div>
+          <div class="w-10 h-10 rounded-full bg-blue-900 border-2 border-amber-400 flex items-center justify-center text-sm font-bold text-amber-400 shrink-0 shadow" id="sidebarAvatar">A</div>
           <div class="min-w-0">
-            <p class="text-sm font-medium truncate" id="sidebarNom">Administrateur</p>
-            <p class="text-xs text-[#9FCBB8] truncate" id="sidebarEmail">email@univ-douala.cm</p>
+            <p class="text-sm font-semibold truncate text-white" id="sidebarNom">Administrateur</p>
+            <p class="text-xs text-slate-400 truncate" id="sidebarEmail">email@univ-douala.cm</p>
           </div>
         </div>
-        <button onclick="deconnexion()" class="mt-4 w-full text-left text-xs text-[#F4A5A5] hover:text-white transition-colors px-2">
-          ← Se déconnecter
+        <button onclick="deconnexion()" class="mt-4 w-full text-left text-xs text-rose-400 hover:text-rose-300 font-semibold transition-colors px-2 flex items-center gap-1.5">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+          <span>Se déconnecter</span>
         </button>
       </div>
     </aside>
 
     <!-- MOBILE TOP BAR -->
-    <div class="lg:hidden fixed top-0 inset-x-0 z-20 bg-[#0F3D2E] text-white px-4 py-4 flex items-center justify-between">
+    <div class="lg:hidden fixed top-0 inset-x-0 z-20 bg-blue-950 text-white px-4 py-4 flex items-center justify-between shadow-md border-b border-amber-500/20">
       <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded bg-[#1C6B4F] flex items-center justify-center text-xs font-serif-academic font-bold">FS</div>
-        <span class="font-serif-academic text-sm">Administration</span>
+        <div class="w-8 h-8 rounded-lg bg-amber-500 text-blue-950 flex items-center justify-center text-xs font-bold">FS</div>
+        <span class="font-bold text-sm tracking-wide">Administration</span>
       </div>
-      <button onclick="deconnexion()" class="text-xs text-[#F4A5A5]">Déconnexion</button>
+      <button onclick="deconnexion()" class="text-xs text-rose-400 font-semibold">Déconnexion</button>
     </div>
 
     <!-- CONTENU PRINCIPAL -->
     <main class="flex-1 pt-20 lg:pt-0">
 
-      <header class="bg-white border-b border-[#E8E4D8] px-6 lg:px-10 py-6 lg:py-8">
+      <!-- En-tête Principal -->
+      <header class="bg-white border-b border-slate-200/80 px-6 lg:px-10 py-6 lg:py-8 shadow-sm">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <p class="text-xs uppercase tracking-wide text-[#B45309] font-semibold mb-1">Tableau de bord</p>
-            <h1 class="font-serif-academic text-2xl lg:text-3xl text-[#0F3D2E]">Administration</h1>
+            <p class="text-xs uppercase tracking-wider text-amber-600 font-bold mb-1">Espace de gestion</p>
+            <h1 class="text-2xl lg:text-3xl font-bold text-blue-950">Administration des requêtes</h1>
           </div>
-          <input type="text" id="recherche" placeholder="Rechercher par référence..."
-            class="w-full lg:w-72 border border-[#E8E4D8] rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:border-[#1C6B4F]">
+          <div class="relative w-full lg:w-72">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </span>
+            <input type="text" id="recherche" placeholder="Rechercher par référence..."
+              class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-full text-xs font-medium focus:outline-none focus:ring-2 focus:ring-amber-500 focus:bg-white transition-all">
+          </div>
         </div>
       </header>
 
-      <div class="px-6 lg:px-10 py-6 lg:py-8">
+      <div class="px-6 lg:px-10 py-6 lg:py-8 space-y-8">
 
-        <!-- CARTES STATS -->
-        <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4 mb-8" id="statsCards">
-          <div class="bg-white rounded-xl p-4 lg:p-5 border border-[#E8E4D8]">
-            <p class="text-[11px] uppercase tracking-wide text-gray-400 font-semibold mb-2">Total requêtes</p>
-            <p class="text-2xl lg:text-3xl font-serif-academic text-[#0F3D2E]" id="statTotal">-</p>
+        <!-- CARTES STATS (Injectées dynamiquement) -->
+        <div>
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Statistiques générales</h2>
+          <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 lg:gap-4" id="statsCards">
+            <div class="bg-white rounded-2xl p-4 lg:p-5 border border-slate-200/80 shadow-sm">
+              <p class="text-[11px] uppercase tracking-wide text-slate-400 font-bold mb-2">Total requêtes</p>
+              <p class="text-2xl lg:text-3xl font-bold text-blue-950" id="statTotal">-</p>
+            </div>
           </div>
         </div>
 
-        <div class="flex items-center justify-between mb-4" id="toutes">
-          <h2 class="font-serif-academic text-lg text-[#0F3D2E]">Toutes les requêtes</h2>
-        </div>
+        <!-- LISTE DES REQUÊTES -->
+        <div>
+          <div class="flex items-center justify-between mb-4" id="toutes">
+            <h2 class="text-lg font-bold text-blue-950">Toutes les requêtes</h2>
+          </div>
 
-        <div id="listeRequetes" class="space-y-3">
-          <p class="text-sm text-gray-400">Chargement...</p>
+          <div id="listeRequetes" class="space-y-3">
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-8 text-center text-xs text-slate-400">
+              Chargement des données...
+            </div>
+          </div>
         </div>
 
       </div>
@@ -106,20 +121,21 @@
     document.getElementById('sidebarEmail').textContent = utilisateur.email;
     document.getElementById('sidebarAvatar').textContent = utilisateur.prenom.charAt(0).toUpperCase();
 
+    // Configuration des badges selon le statut
     const statutConfig = {
-      SOUMISE:                  { label: 'Soumise',               badge: 'bg-[#FDF1E2] text-[#B45309]' },
-      EN_COURS_DE_TRAITEMENT:   { label: 'En cours de traitement', badge: 'bg-[#E6EEFB] text-[#1D4ED8]' },
-      EN_ATTENTE_DE_COMPLEMENT: { label: 'En attente de complément', badge: 'bg-[#FDF1E2] text-[#B45309]' },
-      TRAITEE:                  { label: 'Traitée',                badge: 'bg-[#E5F3EA] text-[#15803D]' },
-      REJETEE:                  { label: 'Rejetée',                badge: 'bg-[#FBE9E9] text-[#B91C1C]' },
+      SOUMISE:                  { label: 'Soumise',               badge: 'bg-amber-100 text-amber-800 border border-amber-200' },
+      EN_COURS_DE_TRAITEMENT:   { label: 'En cours',              badge: 'bg-blue-100 text-blue-800 border border-blue-200' },
+      EN_ATTENTE_DE_COMPLEMENT: { label: 'En attente complément', badge: 'bg-orange-100 text-orange-800 border border-orange-200' },
+      TRAITEE:                  { label: 'Traitée',               badge: 'bg-emerald-100 text-emerald-800 border border-emerald-200' },
+      REJETEE:                  { label: 'Rejetée',               badge: 'bg-rose-100 text-rose-800 border border-rose-200' },
     };
 
     const statutCouleurCarte = {
-      SOUMISE: 'text-[#B45309]',
-      EN_COURS_DE_TRAITEMENT: 'text-[#1D4ED8]',
-      EN_ATTENTE_DE_COMPLEMENT: 'text-[#B45309]',
-      TRAITEE: 'text-[#15803D]',
-      REJETEE: 'text-[#B91C1C]',
+      SOUMISE: 'text-amber-600',
+      EN_COURS_DE_TRAITEMENT: 'text-blue-900',
+      EN_ATTENTE_DE_COMPLEMENT: 'text-orange-600',
+      TRAITEE: 'text-emerald-600',
+      REJETEE: 'text-rose-600',
     };
 
     async function chargerStats() {
@@ -128,26 +144,26 @@
         const conteneur = document.getElementById('statsCards');
 
         let html = `
-          <div class="bg-white rounded-xl p-4 lg:p-5 border border-[#E8E4D8]">
-            <p class="text-[11px] uppercase tracking-wide text-gray-400 font-semibold mb-2">Total requêtes</p>
-            <p class="text-2xl lg:text-3xl font-serif-academic text-[#0F3D2E]">${stats.total}</p>
+          <div class="bg-white rounded-2xl p-4 lg:p-5 border border-slate-200/80 shadow-sm hover:border-amber-500/50 transition">
+            <p class="text-[11px] uppercase tracking-wide text-slate-400 font-bold mb-2">Total requêtes</p>
+            <p class="text-2xl lg:text-3xl font-bold text-blue-950">${stats.total}</p>
           </div>
         `;
 
         stats.parStatut.forEach(s => {
           const cfg = statutConfig[s.statut] || { label: s.statut };
-          const couleur = statutCouleurCarte[s.statut] || 'text-[#0F3D2E]';
+          const couleur = statutCouleurCarte[s.statut] || 'text-blue-950';
           html += `
-            <div class="bg-white rounded-xl p-4 lg:p-5 border border-[#E8E4D8]">
-              <p class="text-[11px] uppercase tracking-wide ${couleur} font-semibold mb-2">${cfg.label}</p>
-              <p class="text-2xl lg:text-3xl font-serif-academic ${couleur}">${s.total}</p>
+            <div class="bg-white rounded-2xl p-4 lg:p-5 border border-slate-200/80 shadow-sm hover:border-amber-500/50 transition">
+              <p class="text-[11px] uppercase tracking-wide ${couleur} font-bold mb-2">${cfg.label}</p>
+              <p class="text-2xl lg:text-3xl font-bold ${couleur}">${s.total}</p>
             </div>
           `;
         });
 
         conteneur.innerHTML = html;
       } catch (error) {
-        console.error(error);
+        console.error("Erreur lors du chargement des statistiques :", error);
       }
     }
 
@@ -158,26 +174,39 @@
         const requetes = await apiRequest(`/requetes${query}`, 'GET');
 
         if (requetes.length === 0) {
-          conteneur.innerHTML = '<div class="bg-white rounded-xl border border-[#E8E4D8] p-8 text-center text-sm text-gray-400">Aucune requête.</div>';
+          conteneur.innerHTML = `
+            <div class="bg-white rounded-2xl border border-slate-200/80 p-8 text-center text-xs text-slate-400 font-medium">
+              Aucune requête ne correspond à votre recherche.
+            </div>`;
           return;
         }
 
         conteneur.innerHTML = requetes.map(r => {
-          const cfg = statutConfig[r.statut] || { label: r.statut, badge: 'bg-gray-100 text-gray-600' };
+          const cfg = statutConfig[r.statut] || { label: r.statut, badge: 'bg-slate-100 text-slate-700' };
+          const nomAgent = r.agent ? `${r.agent.prenom} ${r.agent.nom}` : 'Non affecté';
+
           return `
-            <a href="detail-requete.html?id=${r.id}" class="block bg-white rounded-xl border border-[#E8E4D8] p-4 lg:p-5 hover:border-[#1C6B4F] transition-colors">
+            <a href="detail-requete.html?id=${r.id}" class="block bg-white rounded-2xl border border-slate-200/80 p-4 lg:p-5 hover:border-amber-500/80 hover:shadow-md transition-all">
               <div class="flex justify-between items-start gap-3">
-                <div class="min-w-0">
-                  <p class="font-medium text-[#0F3D2E]">${r.objet}</p>
-                  <p class="text-xs text-gray-400 mt-1">${r.reference} · ${r.etudiant.prenom} ${r.etudiant.nom} · Agent : ${r.agent ? r.agent.prenom + ' ' + r.agent.nom : 'Non affecté'}</p>
+                <div class="min-w-0 space-y-1">
+                  <p class="font-bold text-blue-950 text-sm leading-snug">${r.objet}</p>
+                  <div class="flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                    <span class="font-mono text-amber-600 font-semibold bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200/60">${r.reference}</span>
+                    <span>•</span>
+                    <span>Étd : <strong class="text-slate-700">${r.etudiant.prenom} ${r.etudiant.nom}</strong></span>
+                    <span>•</span>
+                    <span>Agent : <span class="text-slate-600 font-medium">${nomAgent}</span></span>
+                  </div>
                 </div>
-                <span class="text-xs px-2.5 py-1 rounded-full font-medium shrink-0 ${cfg.badge}">${cfg.label}</span>
+                <span class="text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-wider shrink-0 ${cfg.badge}">
+                  ${cfg.label}
+                </span>
               </div>
             </a>
           `;
         }).join('');
       } catch (error) {
-        conteneur.innerHTML = `<p class="text-red-600 text-sm">${error.message}</p>`;
+        conteneur.innerHTML = `<div class="bg-rose-50 text-rose-700 p-4 rounded-xl text-xs font-semibold border border-rose-200">${error.message}</div>`;
       }
     }
 
