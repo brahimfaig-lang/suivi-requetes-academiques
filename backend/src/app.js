@@ -9,9 +9,17 @@ const utilisateurRoutes = require('./routes/utilisateur.routes');
 
 const app = express();
 
-app.use(cors());
+// Configuration CORS (Doit être placée APRÈS const app = express())
+app.use(cors({
+  origin: 'https://capable-melomakarona-b7eaab.netlify.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+
 app.use(express.json());
 
+// Routes API
 app.use('/api/auth', authRoutes);
 app.use('/api/requetes', requeteRoutes);
 app.use('/api/dashboard', dashboardRoutes);
