@@ -10,10 +10,21 @@ const utilisateurRoutes = require('./routes/utilisateur.routes');
 const app = express();
 
 // Configuration CORS (Doit être placée APRÈS const app = express())
+const allowedOrigins = [
+  'https://capable-melomakarona-b7eaab.netlify.app',
+  'http://localhost:5500',
+  'http://127.0.0.1:5500'
+];
+
 app.use(cors({
-  origin: 'https://capable-melomakarona-b7eaab.netlify.app',
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: (origin, callback) => {
+    // Autorise Netlify, Localhost ET l'ouverture directe par double-clic (origin === 'null')
+    if (!origin || origin === 'null' || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Blocage CORS'));
+    }
+  },
   credentials: true
 }));
 
