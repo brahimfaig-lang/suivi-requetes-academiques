@@ -114,12 +114,12 @@
   <script src="../js/api.js"></script>
   <script src="../js/auth.js"></script>
   <script>
+ const utilisateur = getUtilisateur();
 
-if (!estConnecte() || utilisateur.role !== 'ADMIN') {
+if (!estConnecte() || utilisateur.role !== 'ADMINISTRATEUR') {
   window.location.href = '../index.html';
 }
-
-    const utilisateur = getUtilisateur();
+   
     document.getElementById('sidebarNom').textContent = `${utilisateur.prenom} ${utilisateur.nom}`;
     document.getElementById('sidebarEmail').textContent = utilisateur.email;
     document.getElementById('sidebarAvatar').textContent = utilisateur.prenom.charAt(0).toUpperCase();
