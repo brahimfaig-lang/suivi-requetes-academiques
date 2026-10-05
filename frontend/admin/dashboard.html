@@ -115,7 +115,9 @@
   <script src="../js/auth.js"></script>
   <script>
 
-if (!estConnecte()) window.location.href = '../index.html';
+if (!estConnecte() || utilisateur.role !== 'ADMIN') {
+  window.location.href = '../index.html';
+}
 
     const utilisateur = getUtilisateur();
     document.getElementById('sidebarNom').textContent = `${utilisateur.prenom} ${utilisateur.nom}`;
