@@ -111,11 +111,13 @@
   <script src="../js/api.js"></script>
   <script src="../js/auth.js"></script>
   <script>
+     const utilisateur = getUtilisateur();
+     
   if (!estConnecte() || utilisateur.role !== 'AGENT') {
   window.location.href = '../index.html';
 }
 
-    const utilisateur = getUtilisateur();
+   
     document.getElementById('prenomHeader').textContent = utilisateur.prenom;
     document.getElementById('sidebarNom').textContent = `${utilisateur.prenom} ${utilisateur.nom}`;
     document.getElementById('sidebarEmail').textContent = utilisateur.email;
